@@ -1,0 +1,72 @@
+<table>
+    <tbody>
+        <!-- Personal Information -->
+        <tr>
+            <td class="section" colspan="2">Personal Information</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>{{ form.name }}</td>
+        </tr>
+        <tr>
+            <td>Role</td>
+            <td>{{ form.position }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ form.email }}</td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td>{{ form.phone }}</td>
+        </tr>
+
+        <!-- Skills -->
+        <tr>
+            <td class="section" colspan="2">Skills</td>
+        </tr>
+        <tr>
+            <td colspan="2" v-html="$escapeNl2br(form.skills)"></td>
+        </tr>
+
+        <!-- Experience -->
+        <tr v-if="form.experience.length > 0">
+            <td class="section" colspan="2">Experience</td>
+        </tr>
+        <tr v-for="(exp, index) in form.experience" :key="'exp-' + index">
+            <td class="left-col">
+                <span class="bold">{{ exp.company }}</span><br>
+                {{ exp.position }}<br>
+                <span class="italic">{{ exp.period }}</span>
+            </td>
+            <td v-html="$escapeNl2br(exp.description)"></td>
+        </tr>
+
+        <!-- Education -->
+        <tr v-if="form.education.length > 0">
+            <td colspan="2" class="section">Education</td>
+        </tr>
+
+        <tr v-for="(edu, index) in form.education" :key="'edu-' + index">
+            <td class="left-col">
+                <span class="bold">{{ edu.school }}</span><br>
+                {{ edu.degree }}<br>
+                <span class="italic">{{ edu.period }}</span>
+            </td>
+            <td v-html="$escapeNl2br(edu.description)"></td>
+        </tr>
+
+        <!-- Other -->
+        <tr>
+            <td class="section" colspan="2">Other</td>
+        </tr>
+        <tr>
+            <td class="left-col">Hobbies</td>
+            <td v-html="$escapeNl2br(form.hobbies)"></td>
+        </tr>
+        <tr>
+            <td class="left-col">Languages</td>
+            <td v-html="$escapeNl2br(form.languages)"></td>
+        </tr>
+    </tbody>
+</table>
