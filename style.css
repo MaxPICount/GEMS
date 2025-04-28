@@ -8,6 +8,11 @@
     width: 100%;
     border-collapse: collapse;
 }
+
+.pdf-template>table .more_actual {
+    background-color: lightgreen;
+}
+
 .pdf-template>table td {
     border: 1px solid #ccc;
     padding: 8px;

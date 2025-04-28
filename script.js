@@ -1,3 +1,9 @@
+import { createApp } from 'vue'
+import { jsPDF } from "jspdf";
+
+import { applyPlugin } from 'jspdf-autotable'
+applyPlugin(jsPDF)
+
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
@@ -9,8 +15,7 @@ document.addEventListener(
             previewRegenerateDelay = 2000,
             OpenRouteApiKey = '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',
             OpenRouteModel = 'deepseek/deepseek-r1:free',
-            app = Vue
-                .createApp({
+            app = createApp({
                     data() {
                         return {
                             form: {
@@ -41,6 +46,8 @@ document.addEventListener(
                                 introduction: '',
                                 body: '',
                                 closing: '',
+                                actual_skills: '',
+                                actual_experiences: [],
                             },
                             isWaitingAI: false
                         };
@@ -76,18 +83,18 @@ ${JSON.stringify(form, null, 2)}
                                         body: JSON.stringify({
                                             model: OpenRouteModel,
                                             messages: [
-                                                // {role: "system", content: "You are a helpful assistant that helps users tailor CVs."},
                                                 {
                                                     "role": "system",
                                                     "content": `
 *) You are a helpful assistant that helps users tailor CVs with cover letter
-*) The cover letter should follow a structured format (introduction, body, closing) and be tailored to the job's position.
+*) The cover letter should follow a structured format (introduction, body, closing) and be tailored to the job's position from user's data.
 *) You returns responses in strict JSON format. Do not use Markdown, quotes, or any explanatory text. Only output a plain JSON object with the following :
 {
     "introduction": "One-paragraph professional summary",
     "body": "A short personalized cover letter (up to 120 words)",
-    "actual_skills": ["Skill 1", "Skill 2", "Skill 3"]
-    "closing": "Shortest total conclusion"
+    "closing": "Shortest total conclusion",
+    "actual_skills": ["Skill 1", "Skill 2", "Skill 3"],
+    "actual_experiences": [0,3,4] # experience indexes of user's data experience array
 }
 `
                                                 },
@@ -97,11 +104,11 @@ ${JSON.stringify(form, null, 2)}
                                     }),
                                     result = await response.json(),
                                     content = result.choices?.[0]?.message?.content || "{}";
-
+                                console.log('AI reasoning:', result.choices?.[0]?.message?.reasoning ?? '---');
                                 let parsed;
                                 try {
                                     parsed = JSON.parse(content);
-                                    console.log(parsed);
+                                    console.log('AI response:', parsed);
                                 } catch (e) {
                                     const error = 'Incorrect JSON response from AI';
                                     console.error(`${error}:${content}`, content);
@@ -114,6 +121,8 @@ ${JSON.stringify(form, null, 2)}
                                         introduction: aiSuggestions.introduction = '',
                                         body: aiSuggestions.body = '',
                                         closing: aiSuggestions.closing = '',
+                                        actual_skills: aiSuggestions.actual_skills = '',
+                                        actual_experiences: aiSuggestions.actual_experiences = '',
                                     }
                                         = parsed
                                 );
@@ -176,7 +185,7 @@ ${JSON.stringify(form, null, 2)}
 
                         previewRegenerate() {
                             const
-                                pdf = (new window.jspdf.jsPDF())
+                                pdf = (new jsPDF())
                                     .autoTable(// print CV into PDF
                                         {
                                             html: document.querySelector('#cv-template>table'),

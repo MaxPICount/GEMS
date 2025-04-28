@@ -25,6 +25,9 @@
         <tr>
             <td class="section" colspan="2">Skills</td>
         </tr>
+        <tr class="more_actual" v-if="aiSuggestions.actual_skills">
+            <td colspan="2">{{ aiSuggestions.actual_skills.join(', ') }}</td>
+        </tr>
         <tr>
             <td colspan="2" v-html="$escapeNl2br(form.skills)"></td>
         </tr>
@@ -33,7 +36,10 @@
         <tr v-if="form.experience.length > 0">
             <td class="section" colspan="2">Experience</td>
         </tr>
-        <tr v-for="(exp, index) in form.experience" :key="'exp-' + index">
+        <tr
+                v-for="(exp, index) in form.experience"
+                :key="'exp-' + index"
+                :class="{ more_actual: aiSuggestions.actual_experiences.includes(index) }">
             <td class="left-col">
                 <span class="bold">{{ exp.company }}</span><br>
                 {{ exp.position }}<br>
