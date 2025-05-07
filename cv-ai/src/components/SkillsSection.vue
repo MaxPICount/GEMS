@@ -2,7 +2,8 @@
   <div class="my-4">
     <h2 class="text-xl font-semibold mb-2">Навыки</h2>
     <Vue3TagsInput
-        v-model="form.skills"
+        :tags="form.skills"
+        @on-tags-changed="tags => form.skills = tags"
         placeholder="Введите навыки"
         :max-tags="10"
         :allow-duplicates="false"

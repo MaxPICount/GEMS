@@ -14,6 +14,9 @@
   </div>
 </template>
 
+<script setup>
+defineProps(['form'])
+</script>
 <script>
 import ExperienceSection from './ExperienceSection.vue'
 import EducationSection from './EducationSection.vue'
