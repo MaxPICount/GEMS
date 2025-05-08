@@ -4,27 +4,27 @@
       <h1 class="text-3xl font-bold mb-6 text-center">CV Generator</h1>
       <div class="bg-white shadow-md rounded p-6 flex gap-6">
         <!-- Левая часть — форма -->
-        <div class="w-1/2">
-          <CvForm :form="form" @submit="handleSubmit"/>
+        <div
+            class="w-1/2"
+            @dragover.prevent="dragging = true"
+            @dragleave.prevent="dragging = false"
+            @drop.prevent="(event) => {handleDrop(event); dragging = false}"
+            :class="dragging ? 'border-blue-500 bg-blue-50' : ''"
+        >
+          <CvForm :form="form" />
         </div>
 
         <!-- Правая часть — превью -->
         <div class="w-1/2 border-l pl-6 text-gray-600">
-          <h2 class="text-xl font-semibold mb-4">Preview</h2>
           <iframe
               v-if="iframeSrc"
               :src="iframeSrc"
-              class="w-full h-full border mt-4"
+              class="w-full h-full border"
           />
         </div>
       </div>
       <div class="mt-6 flex justify-end">
-        <button
-            @click="generatePDF"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Скачать PDF
-        </button>
+        <button @click="exportForm">Экспорт</button>
       </div>
     </div>
 
@@ -50,14 +50,12 @@ const form = reactive({
   education: [],
   skills: [],
   languages: [],
-})
+  about: '',
+}),
+    dragging = ref(false)
+
 
 const iframeSrc = ref(null)
-
-// функция сохранения (если нужно)
-const handleSubmit = (data) => {
-  console.log('Сохраняем:', data)
-}
 
 let previewRegenerateTimer = null;
 const previewRegenerateWithDelay = () => {
@@ -79,6 +77,35 @@ const previewRegenerate = () => {
   })
 }
 
-// вот тут Composition-style watch
 watch(form, previewRegenerateWithDelay, { deep: true })
+
+const exportForm = () => {
+  const blob = new Blob([JSON.stringify(toRaw(form), null, 2)], {
+    type: 'application/json'
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${form.position}-${form.name}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+const handleDrop = async (event) => {
+  const file = event.dataTransfer.files[0];
+  if (!file || file.type !== 'application/json') {
+    alert('Пожалуйста, перетащите JSON-файл');
+    return;
+  }
+
+  const text = await file.text();
+  try {
+    const data = JSON.parse(text);
+    Object.assign(form, data);
+    console.log('Загружено:', form);
+  } catch (e) {
+    alert('Ошибка чтения JSON-файла');
+  }
+}
+
 </script>

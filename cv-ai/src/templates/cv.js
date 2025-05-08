@@ -67,7 +67,7 @@ export default (formData) => {
                         ...formData.languages.length
                             ? [
                                 [{text: 'Языки', style: 'sectionHeader', colSpan: 2}, ''],
-                                [{text: formData.languages.join(', '), colSpan: 2}, '']
+                                [{text: formData.languages.map( lang => `${lang.name} - ${lang.level}`).join(', '), colSpan: 2}, '']
                             ]
                             : [],
                     ].filter(Boolean),
