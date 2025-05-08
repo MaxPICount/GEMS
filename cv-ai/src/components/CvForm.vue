@@ -1,6 +1,12 @@
 <!-- CvForm.vue -->
 <template>
   <div>
+    <input
+        v-model="form.position"
+        type="text"
+        placeholder="Должность"
+        class="border p-2 w-full mb-2"
+    />
     <PersonalSection :form="form"/>
     <ExperienceSection :form="form"/>
     <EducationSection :form="form"/>

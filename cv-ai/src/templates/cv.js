@@ -1,37 +1,87 @@
 export default (formData) => {
     return {
+        version: '1.7',
+        subset: 'PDF/A-1a',
+        tagged: true,
+        displayTitle: true,
+
+        pageSize: 'A4',
+        pageOrientation: 'portrait',
+
+        // language: 'cs-CZ',
+        compress: true,
+
+        // pageBreakBefore: (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) =>
+        //     currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0,
+
+        info: {
+            title: `${formData.position || 'Резюме'} - ${formData.name}`,
+            author: "CV Generator",
+            subject: "CV",
+            keywords: formData.position || 'cv',
+            creator: "CV Generator",
+        },
+
+        footer: (currentPage, pageCount) => [
+            {text: `${currentPage} / ${pageCount}`, alignment: 'center', fontSize: 9, color: 'gray'},
+        ],
+
         content: [
-            {text: 'Резюме', style: 'header'},
-            {text: `Имя: ${formData.name}`, style: 'subheader'},
-            {text: `Email: ${formData.email}`},
-            {text: `Телефон: ${formData.phone}`},
-            {text: 'Опыт работы', style: 'sectionHeader'},
             {
                 table: {
-                    widths: ['*', '*', '*'],
+                    widths: ['25%', '*'],
                     body: [
-                        ['Компания', 'Должность', 'Описание'],
-                        ...formData.experience.map(exp => [exp.company, exp.position, exp.description])
-                    ]
-                }
+                        ['Имя', formData.name],
+                        ['Email', formData.email],
+                        ['Телефон', formData.phone],
+                        formData.position ? ['Желаемая должность', formData.position] : null,
+                        formData.about ? ['О себе', formData.about] : null,
+
+                        ...formData.experience.length
+                            ? [
+                                [{text: 'Опыт работы', style: 'sectionHeader', colSpan: 2}, ''],
+                                ...formData.experience.map(exp => [
+                                    `${exp.position}\n${exp.period}\n${exp.company}`,
+                                    exp.description
+                                ])
+                            ]
+                            : [],
+
+                        ...formData.education.length
+                            ? [
+                                [{text: 'Образование', style: 'sectionHeader', colSpan: 2}, ''],
+                                ...formData.education.map(edu => [
+                                    `${edu.school}\n${edu.degree}\n${edu.period}`,
+                                    edu.description
+                                ])
+                            ]
+                            : [],
+
+                        ...formData.skills.length
+                            ? [
+                                [{text: 'Навыки', style: 'sectionHeader', colSpan: 2}, ''],
+                                [{text: formData.skills.join(', '), colSpan: 2}, '']
+                            ]
+                            : [],
+
+                        ...formData.languages.length
+                            ? [
+                                [{text: 'Языки', style: 'sectionHeader', colSpan: 2}, ''],
+                                [{text: formData.languages.join(', '), colSpan: 2}, '']
+                            ]
+                            : [],
+                    ].filter(Boolean),
+                },
+                layout: 'lightHorizontalLines'
             },
-            {text: 'Образование', style: 'sectionHeader'},
-            {
-                table: {
-                    widths: ['*', '*', '*'],
-                    body: [
-                        ['Учебное заведение', 'Степень', 'Период'],
-                        ...formData.education.map(edu => [edu.school, edu.degree, edu.period])
-                    ]
-                }
-            },
-            {text: 'Навыки', style: 'sectionHeader'},
-            {ul: formData.skills}
         ],
         styles: {
-            header: {fontSize: 22, bold: true, margin: [0, 0, 0, 10]},
-            subheader: {fontSize: 16, bold: true, margin: [0, 10, 0, 5]},
-            sectionHeader: {fontSize: 14, bold: true, margin: [0, 10, 0, 5]}
+            sectionHeader: {
+                bold: true,
+                fontSize: 13,
+                margin: [0, 10, 0, 4],
+                fillColor: '#f5f5f5'
+            }
         }
-    }
+    };
 };

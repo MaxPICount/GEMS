@@ -42,6 +42,7 @@ pdfMake.vfs = pdfFonts.vfs
 
 // реактивные данные
 const form = reactive({
+  position: '',
   name: '',
   email: '',
   phone: '',
