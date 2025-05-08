@@ -10,9 +10,11 @@
         placeholder="Должность"
         class="border p-2 w-full mb-2"
     />
-    <input
+    <VueDatePicker
         v-model="experience.period"
-        placeholder="Период"
+        range
+        year-picker
+        placeholder="Годы работы"
         class="border p-2 w-full mb-2"
     />
     <textarea
@@ -31,6 +33,9 @@
 </template>
 
 <script setup>
+import VueDatePicker from "@vuepic/vue-datepicker";
+import '@vuepic/vue-datepicker/dist/main.css'
+
 defineProps(['experience'])
 </script>
 

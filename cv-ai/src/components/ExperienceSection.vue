@@ -29,7 +29,7 @@ export default {
       this.form.experience.push({
         company: '',
         position: '',
-        period: '',
+        period: [],
         description: '',
       });
     },

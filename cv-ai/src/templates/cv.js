@@ -41,7 +41,7 @@ export default (formData) => {
                             ? [
                                 [{text: 'Опыт работы', style: 'sectionHeader', colSpan: 2}, ''],
                                 ...formData.experience.map(exp => [
-                                    `${exp.position}\n${exp.period}\n${exp.company}`,
+                                    `${exp.position}\n${exp.period.join(' - ')}\n${exp.company}`,
                                     exp.description
                                 ])
                             ]
@@ -51,7 +51,7 @@ export default (formData) => {
                             ? [
                                 [{text: 'Образование', style: 'sectionHeader', colSpan: 2}, ''],
                                 ...formData.education.map(edu => [
-                                    `${edu.school}\n${edu.degree}\n${edu.period}`,
+                                    `${edu.school}\n${edu.degree}\n${edu.period.join(' - ')}`,
                                     edu.description
                                 ])
                             ]

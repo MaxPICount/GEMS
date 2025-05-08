@@ -29,7 +29,7 @@ export default {
       this.form.education.push({
         school: '',
         degree: '',
-        period: '',
+        period: [],
         description: '',
       });
     },
